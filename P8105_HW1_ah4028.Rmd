@@ -1,0 +1,42 @@
+---
+title: "P8105_HW1_ah4028"
+author: "Austin Hsin"
+date: "2023-09-14"
+output: html_document
+---
+
+Setup code to include loading the moderndive library.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(moderndive)
+```
+
+## Problem 1
+
+This is the code for loading the early_january_weather dataset and determining the details of the dataset.
+
+```{r}
+data("early_january_weather")
+early_january_weather
+nrow(early_january_weather)
+ncol(early_january_weather)
+```
+
+The dataset early_january_weather has variables origin, year, month, day, hour, temp, dewp, humid, wind_dir, wind_speed, wind_gust, precip, pressure, visib, and time_hour. 
+
+There are 358 rows and 15 columns according to nrow and ncol respectively.
+
+The mean temperature is 39.6 degrees Fahrenheit.
+
+## Problem 1 Plots
+
+This is the code for plotting time_hour by temp, colored by humid, from the early_january_weather dataset.
+
+```{r plots, echo=FALSE}
+ggplot(early_january_weather, aes(x = time_hour, y = temp, color = humid)) + geom_point()
+ggsave("early_january_weather_time_hour_by_temp.pdf", height = 4, width = 6)
+```
+
+
