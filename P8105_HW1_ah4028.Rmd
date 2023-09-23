@@ -5,54 +5,82 @@ date: "2023-09-14"
 output: html_document
 ---
 
-Setup code to include loading the moderndive library.
+Setup code to load `tidyverse` and `moderndive` libraries and to open the `early_january_weather` dataset.
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, message = FALSE}
+knitr::opts_chunk$set(warning = FALSE)
 library(tidyverse)
 library(moderndive)
+data("early_january_weather") 
 ```
 
-## Problem 1 Part 1
+# Problem 1 
 
-Code for loading the early_january_weather dataset and determining its details.
+### Determining `early_january_weather` dataset details.
 
-```{r, Problem 1 Part 1 - early_january_weather dataset}
-#Loading early_january_weather dataset
-data("early_january_weather") 
-
-#Calling up early_january_weather dataset to determine variable list
-early_january_weather
-
-#Determining size of early_january_weather dataset with nrow and ncol
+```{r, early_january_weather}
+# Determining size of `early_january_weather` dataset with `nrow` and `ncol`
 nrow(early_january_weather)
 
 ncol(early_january_weather)
 
-#Determining mean temperature of early_january_weather dataframe using variable temp
+# Determining mean temperature of `early_january_weather` dataframe using variable `temp`
 df = early_january_weather
 
 mean(df$temp)
 ```
+The dataset `early_january_weather` contains weather data from EWR (`origin`) between 01Sept2013 and 15Sept2013 and includes variables `origin`, `year`, `month`, `day`, `hour`, `temp`, `dewp`, `humid`, `wind_dir`, `wind_speed`, `wind_gust`, `precip`, `pressure`, `visib`, and `time_hour`. 
 
-The dataset early_january_weather has variables origin, year, month, day, hour, temp, dewp, humid, wind_dir, wind_speed, wind_gust, precip, pressure, visib, and time_hour. 
-
-There are 358 rows and 15 columns according to nrow and ncol respectively.
+There are 358 rows and 15 columns according to `nrow` and `ncol` respectively.
 
 The mean temperature is 39.58212 degrees Fahrenheit.
 
-## Problem 1 Part 2
+### Creating a scatterplot of `temp`(y) vs. `time_hour`(x)
 
-Code for plotting temp vs time_hour from early_january_weather dataset
-
-```{r, Problem 1 Part 2}
-#Scatterplot of temp vs time_hour, colored by humid
+```{r, scatterplot}
+# Scatterplot of `temp` vs `time_hour`, colored by `humid`
 ggplot(early_january_weather, aes(x = time_hour, y = temp, color = humid)) + geom_point()
 
-#Exporting scatterplot temp vs time_hour 
+# Exporting scatterplot `temp` vs `time_hour` 
 ggsave("early_january_weather_time_hour_by_temp.pdf", height = 4, width = 10)
 ```
-I made the decision to divide Problem 1 into two different code chunks to neatly separate the discussion for the questions on the early_january_weather dataset and the plot of temp vs time_hour.
 
-The scatterplot shows that as temperature rises, humidity decreases and that the temperature rises and falls with the day/night cycle.
+The scatterplot shows that `time_hour` and `temp` have a positively correlated relationship such that as `time_hour` increases, `temp` increases.
 
+## Problem 2
+
+### Creating a data frame with specific variables and dimensions.
+
+```{r, problem2_df}
+# Set seed to ensure reproducibility
+set.seed(123)
+
+# Defining Data Frame
+problem2_df = tibble(
+  vec_numeric = rnorm(10, sd=1),
+  vec_logical = vec_numeric > 0,
+  vec_char = c("I", "am", "enjoying", "the", "data", "science", "course", "at", "Columbia", "immensely"),
+  vec_factor = factor(rep(c("yes", "no", "maybe"), length = 10))
+)
+```
+
+# Pulling vectors out of the dataframe to obtain their means
+
+```{r, problem2_df means}
+mean_vec_numeric = mean(pull(problem2_df, vec_numeric))
+mean_vec_logical = mean(pull(problem2_df, vec_logical))
+mean_vec_char = mean(pull(problem2_df, vec_char))
+mean_vec_factor = mean(pull(problem2_df, vec_factor))
+```
+
+We are unable to pull the mean from `vec_char` and `vec_factor` because they do not contain numeric variables.
+
+# Converting problem2_df vectors `vec_logical`, `vec_char`, and `vec_factor` to numeric variables
+
+```{r, as_numeric, results=FALSE}
+as.numeric(pull(problem2_df, vec_logical))
+as.numeric(pull(problem2_df, vec_char))
+as.numeric(pull(problem2_df, vec_factor))
+```
+
+Because `vec_logical` is true/false, `as.numeric` translates it to binary. With `vec_char`, the `as.numeric` is unable to translate the nominal data points and creates NA values as a result. Finally, with `vec_factor`, `as.numeric` is able to translate the levels into a 3 level categorical variable.
